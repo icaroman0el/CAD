@@ -7,10 +7,16 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -22,6 +28,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.SimpleTier;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -63,6 +70,20 @@ public class CAD {
     public static final DeferredItem<Item> RAW_PSIONITE = ITEMS.registerSimpleItem("raw_psionite");
     public static final DeferredItem<Item> PSIONITE_INGOT = ITEMS.registerSimpleItem("psionite_ingot");
 
+    public static final SimpleTier PSIONITE_TIER = new SimpleTier(BlockTags.INCORRECT_FOR_DIAMOND_TOOL, 1561, 8.0f, 3.0f, 10,
+            () -> net.minecraft.world.item.crafting.Ingredient.of(PSIONITE_INGOT.get()));
+
+    public static final DeferredItem<SwordItem> PSIONITE_SWORD = ITEMS.register("psionite_sword",
+            () -> new SwordItem(PSIONITE_TIER, new Item.Properties().attributes(SwordItem.createAttributes(PSIONITE_TIER, 3, -2.4f))));
+    public static final DeferredItem<ShovelItem> PSIONITE_SHOVEL = ITEMS.register("psionite_shovel",
+            () -> new ShovelItem(PSIONITE_TIER, new Item.Properties().attributes(ShovelItem.createAttributes(PSIONITE_TIER, 1.5f, -3.0f))));
+    public static final DeferredItem<PickaxeItem> PSIONITE_PICKAXE = ITEMS.register("psionite_pickaxe",
+            () -> new PickaxeItem(PSIONITE_TIER, new Item.Properties().attributes(PickaxeItem.createAttributes(PSIONITE_TIER, 1.0f, -2.8f))));
+    public static final DeferredItem<AxeItem> PSIONITE_AXE = ITEMS.register("psionite_axe",
+            () -> new AxeItem(PSIONITE_TIER, new Item.Properties().attributes(AxeItem.createAttributes(PSIONITE_TIER, 5.0f, -3.0f))));
+    public static final DeferredItem<HoeItem> PSIONITE_HOE = ITEMS.register("psionite_hoe",
+            () -> new HoeItem(PSIONITE_TIER, new Item.Properties().attributes(HoeItem.createAttributes(PSIONITE_TIER, -3.0f, 0.0f))));
+
     // Creates a creative tab with the id "cad:example_tab" for the example item, that is placed after the combat tab
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.cad")) //The language key for the title of your CreativeModeTab
@@ -73,6 +94,11 @@ public class CAD {
                 output.accept(PSIONITE_INGOT.get());
                 output.accept(PSIONITE_ORE_ITEM.get());
                 output.accept(PSIONITE_BLOCK_ITEM.get());
+                output.accept(PSIONITE_SWORD.get());
+                output.accept(PSIONITE_SHOVEL.get());
+                output.accept(PSIONITE_PICKAXE.get());
+                output.accept(PSIONITE_AXE.get());
+                output.accept(PSIONITE_HOE.get());
             }).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
@@ -125,6 +151,18 @@ public class CAD {
 
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             event.accept(PSIONITE_BLOCK_ITEM);
+        }
+
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            event.accept(PSIONITE_SHOVEL);
+            event.accept(PSIONITE_PICKAXE);
+            event.accept(PSIONITE_AXE);
+            event.accept(PSIONITE_HOE);
+        }
+
+        if (event.getTabKey() == CreativeModeTabs.COMBAT) {
+            event.accept(PSIONITE_SWORD);
+            event.accept(PSIONITE_AXE);
         }
     }
 
