@@ -1,5 +1,6 @@
 package cad.regulusxv.cad;
 
+import cad.regulusxv.cad.psion.PsionData;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -8,12 +9,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
@@ -31,7 +34,10 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.SimpleTier;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -171,5 +177,91 @@ public class CAD {
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
+    }
+
+    @SubscribeEvent
+    public void onPsioniteItemUse(PlayerInteractEvent.RightClickItem event) {
+        if (tryUsePsionite(event.getEntity(), event.getItemStack(), true)) {
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPsioniteBlockUse(PlayerInteractEvent.RightClickBlock event) {
+        if (!event.getEntity().isShiftKeyDown()) {
+            return;
+        }
+
+        if (tryUsePsionite(event.getEntity(), event.getItemStack(), true)) {
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerClone(PlayerEvent.Clone event) {
+        PsionData.copy(event.getOriginal(), event.getEntity());
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(PlayerTickEvent.Post event) {
+        if (!PsionData.isUnlocked(event.getEntity())) {
+            return;
+        }
+
+        if (event.getEntity().tickCount % 80 == 0) {
+            PsionData.add(event.getEntity(), 1);
+        }
+    }
+
+    private boolean tryUsePsionite(net.minecraft.world.entity.player.Player player, ItemStack stack, boolean allowBlockUpgrade) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        boolean changed = false;
+        boolean consumesItem = false;
+
+        if (stack.is(RAW_PSIONITE.get())) {
+            if (!PsionData.isUnlocked(player)) {
+                PsionData.unlock(player);
+                PsionData.add(player, PsionData.RAW_RECHARGE - PsionData.BASE_UNLOCK_AMOUNT);
+            } else {
+                PsionData.add(player, PsionData.RAW_RECHARGE);
+            }
+            changed = true;
+            consumesItem = true;
+        } else if (stack.is(PSIONITE_INGOT.get())) {
+            if (!PsionData.isUnlocked(player)) {
+                PsionData.unlock(player);
+            } else {
+                PsionData.add(player, PsionData.INGOT_RECHARGE);
+            }
+            changed = true;
+            consumesItem = true;
+        } else if (allowBlockUpgrade && stack.is(PSIONITE_BLOCK_ITEM.get())) {
+            if (!PsionData.isUnlocked(player)) {
+                PsionData.unlock(player);
+                PsionData.add(player, PsionData.BLOCK_RECHARGE);
+            } else if (!PsionData.upgradeCapacity(player)) {
+                PsionData.add(player, PsionData.BLOCK_RECHARGE);
+            }
+            changed = true;
+            consumesItem = true;
+        }
+
+        if (!changed) {
+            return false;
+        }
+
+        if (!player.level().isClientSide()) {
+            if (consumesItem && !player.getAbilities().instabuild) {
+                stack.shrink(1);
+            }
+            player.displayClientMessage(PsionData.status(player), true);
+        }
+
+        return true;
     }
 }
