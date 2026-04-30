@@ -9,8 +9,8 @@
   "item.cad.psionite_shovel": "Pá de Psionita",
   "item.cad.psionite_sword": "Espada de Psionita",
   "item.cad.raw_psionite": "Psionita Bruta",
-  "curios.identifier.psion": "Psion",
-  "curios.modifiers.psion": "Ao canalizar Psion:",
+  "curios.identifier.cad": "CAD",
+  "curios.modifiers.cad": "Quando vinculado ao CAD:",
 
   "cad.configuration.title": "Configurações do CAD",
   "cad.configuration.section.cad.common.toml": "Configurações do CAD",

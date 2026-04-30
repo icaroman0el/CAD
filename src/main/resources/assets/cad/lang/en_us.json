@@ -9,8 +9,8 @@
   "item.cad.psionite_shovel": "Psionite Shovel",
   "item.cad.psionite_sword": "Psionite Sword",
   "item.cad.raw_psionite": "Raw Psionite",
-  "curios.identifier.psion": "Psion",
-  "curios.modifiers.psion": "When channeling Psion:",
+  "curios.identifier.cad": "CAD",
+  "curios.modifiers.cad": "When linked to CAD:",
 
   "cad.configuration.title": "CAD Configs",
   "cad.configuration.section.cad.common.toml": "CAD Configs",
