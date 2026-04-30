@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "cad:psionite_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "cad:psionite_ingot"
+  }
+}

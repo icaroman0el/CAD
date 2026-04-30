@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "cad:ore_psionite",
+  "step": "underground_ores"
+}

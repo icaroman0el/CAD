@@ -1,7 +1,9 @@
 {
-  "itemGroup.cad": "Example Mod Tab",
-  "block.cad.example_block": "Example Block",
-  "item.cad.example_item": "Example Item",
+  "itemGroup.cad": "CAD",
+  "block.cad.psionite_block": "Block of Psionite",
+  "block.cad.psionite_ore": "Psionite Ore",
+  "item.cad.psionite_ingot": "Psionite Ingot",
+  "item.cad.raw_psionite": "Raw Psionite",
 
   "cad.configuration.title": "CAD Configs",
   "cad.configuration.section.cad.common.toml": "CAD Configs",

@@ -1,0 +1,15 @@
+{
+  "itemGroup.cad": "CAD",
+  "block.cad.psionite_block": "Bloco de Psionita",
+  "block.cad.psionite_ore": "Minério de Psionita",
+  "item.cad.psionite_ingot": "Lingote de Psionita",
+  "item.cad.raw_psionite": "Psionita Bruta",
+
+  "cad.configuration.title": "Configurações do CAD",
+  "cad.configuration.section.cad.common.toml": "Configurações do CAD",
+  "cad.configuration.section.cad.common.toml.title": "Configurações do CAD",
+  "cad.configuration.items": "Lista de Itens",
+  "cad.configuration.logDirtBlock": "Registrar Bloco de Terra",
+  "cad.configuration.magicNumberIntroduction": "Texto do Número Mágico",
+  "cad.configuration.magicNumber": "Número Mágico"
+}
