@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "cad:block/example_block"
+    }
+  }
+}
