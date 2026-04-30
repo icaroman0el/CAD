@@ -1,25 +1,48 @@
+# CAD
 
-Installation information
-=======
+CAD is a NeoForge mod for Minecraft 1.21.1, inspired by *Mahouka Koukou no Rettousei* and focused on magical technology, rare materials, and future CAD-based systems.
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+The project is still early, but the base is already in place.
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
+## Current Features
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
+- Psionite Ore generation in the Overworld
+- Psionite Ore appears around diamond-level mining heights
+- Psionite Ore requires an iron pickaxe or better
+- Raw Psionite drops from Psionite Ore
+- Psionite Ingot smelting and blasting recipes
+- Psionite Block crafting and unpacking recipes
+- Custom textures, item models, block models, and translations
+- Curios API dependency ready for future equipment and accessory systems
 
-Mapping Names:
-============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
+## Requirements
 
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+- Minecraft 1.21.1
+- NeoForge 21.1.228 or newer
+- Curios API 9.5.1+1.21.1 or newer
+- Java 21
+
+## Development
+
+Build the mod:
+
+```bash
+./gradlew build
+```
+
+Run the client:
+
+```bash
+./gradlew runClient
+```
+
+On Windows:
+
+```bat
+gradlew.bat build
+gradlew.bat runClient
+```
+
+## Status
+
+CAD is under active development. More magical materials, CAD devices, and Curios-based systems are planned.
