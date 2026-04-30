@@ -51,18 +51,17 @@ public class CADClient {
 
         int capacity = PsionData.getCapacity(minecraft.player);
         int amount = PsionData.getAmount(minecraft.player);
-        int barWidth = 86;
-        int barHeight = 6;
-        int x = graphics.guiWidth() / 2 - barWidth / 2;
-        int y = graphics.guiHeight() - 38;
+        int barWidth = 58;
+        int barHeight = 4;
+        int x = 8;
+        int y = 8;
         int fillWidth = capacity <= 0 ? 0 : Math.round(barWidth * (amount / (float) capacity));
-        String label = "Psion " + amount + "/" + capacity;
-        int labelX = graphics.guiWidth() / 2 - minecraft.font.width(label) / 2;
+        String label = amount + "/" + capacity;
 
         graphics.fill(x - 1, y - 1, x + barWidth + 1, y + barHeight + 1, 0xBB160A24);
         graphics.fill(x, y, x + barWidth, y + barHeight, 0xCC2A123A);
         graphics.fill(x, y, x + fillWidth, y + barHeight, 0xFFE052FF);
         graphics.fill(x, y, x + fillWidth, y + 1, 0xFFFFB8FF);
-        graphics.drawString(minecraft.font, label, labelX, y - 10, 0xFFE9B5FF, true);
+        graphics.drawString(minecraft.font, label, x, y + 7, 0xFFE9B5FF, true);
     }
 }
