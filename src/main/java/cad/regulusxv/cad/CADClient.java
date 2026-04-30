@@ -1,5 +1,6 @@
 package cad.regulusxv.cad;
 
+import cad.regulusxv.cad.client.renderer.CadCalibrationTableRenderer;
 import cad.regulusxv.cad.psion.PsionData;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -12,6 +13,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -30,6 +32,7 @@ public class CADClient {
         // Do not forget to add translations for your config options to the en_us.json file.
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         modEventBus.addListener(CADClient::registerGuiLayers);
+        modEventBus.addListener(CADClient::registerRenderers);
     }
 
     @SubscribeEvent
@@ -41,6 +44,10 @@ public class CADClient {
 
     private static void registerGuiLayers(RegisterGuiLayersEvent event) {
         event.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, PSION_HUD, CADClient::renderPsionHud);
+    }
+
+    private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(CAD.CAD_CALIBRATION_TABLE_BLOCK_ENTITY.get(), CadCalibrationTableRenderer::new);
     }
 
     private static void renderPsionHud(GuiGraphics graphics, DeltaTracker deltaTracker) {

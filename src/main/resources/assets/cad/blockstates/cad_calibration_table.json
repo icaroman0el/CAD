@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "cad:block/cad_calibration_table"
+    }
+  }
+}

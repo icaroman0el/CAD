@@ -1,5 +1,7 @@
 package cad.regulusxv.cad;
 
+import cad.regulusxv.cad.block.CadCalibrationTableBlock;
+import cad.regulusxv.cad.block.entity.CadCalibrationTableBlockEntity;
 import cad.regulusxv.cad.psion.PsionData;
 import org.slf4j.Logger;
 
@@ -23,6 +25,7 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
@@ -54,6 +57,7 @@ public class CAD {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
     // Create a Deferred Register to hold Items which will all be registered under the "cad" namespace
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
     // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "cad" namespace
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
@@ -75,6 +79,19 @@ public class CAD {
 
     public static final DeferredItem<Item> RAW_PSIONITE = ITEMS.registerSimpleItem("raw_psionite");
     public static final DeferredItem<Item> PSIONITE_INGOT = ITEMS.registerSimpleItem("psionite_ingot");
+    public static final DeferredItem<Item> CAD_BASIC = ITEMS.registerSimpleItem("cad_basic", new Item.Properties().stacksTo(1));
+
+    public static final DeferredBlock<CadCalibrationTableBlock> CAD_CALIBRATION_TABLE = BLOCKS.register("cad_calibration_table",
+            () -> new CadCalibrationTableBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .strength(4.0f, 8.0f)
+                    .requiresCorrectToolForDrops()
+                    .noOcclusion()
+                    .sound(SoundType.METAL)));
+    public static final DeferredItem<BlockItem> CAD_CALIBRATION_TABLE_ITEM = ITEMS.registerSimpleBlockItem("cad_calibration_table", CAD_CALIBRATION_TABLE);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CadCalibrationTableBlockEntity>> CAD_CALIBRATION_TABLE_BLOCK_ENTITY =
+            BLOCK_ENTITY_TYPES.register("cad_calibration_table",
+                    () -> BlockEntityType.Builder.of(CadCalibrationTableBlockEntity::new, CAD_CALIBRATION_TABLE.get()).build(null));
 
     public static final SimpleTier PSIONITE_TIER = new SimpleTier(BlockTags.INCORRECT_FOR_DIAMOND_TOOL, 1561, 8.0f, 3.0f, 10,
             () -> net.minecraft.world.item.crafting.Ingredient.of(PSIONITE_INGOT.get()));
@@ -98,8 +115,10 @@ public class CAD {
             .displayItems((parameters, output) -> {
                 output.accept(RAW_PSIONITE.get());
                 output.accept(PSIONITE_INGOT.get());
+                output.accept(CAD_BASIC.get());
                 output.accept(PSIONITE_ORE_ITEM.get());
                 output.accept(PSIONITE_BLOCK_ITEM.get());
+                output.accept(CAD_CALIBRATION_TABLE_ITEM.get());
                 output.accept(PSIONITE_SWORD.get());
                 output.accept(PSIONITE_SHOVEL.get());
                 output.accept(PSIONITE_PICKAXE.get());
@@ -117,6 +136,7 @@ public class CAD {
         BLOCKS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so items get registered
         ITEMS.register(modEventBus);
+        BLOCK_ENTITY_TYPES.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
         CREATIVE_MODE_TABS.register(modEventBus);
 
@@ -149,6 +169,7 @@ public class CAD {
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(RAW_PSIONITE);
             event.accept(PSIONITE_INGOT);
+            event.accept(CAD_BASIC);
         }
 
         if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
@@ -157,6 +178,7 @@ public class CAD {
 
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             event.accept(PSIONITE_BLOCK_ITEM);
+            event.accept(CAD_CALIBRATION_TABLE_ITEM);
         }
 
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {

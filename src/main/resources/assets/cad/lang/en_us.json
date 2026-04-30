@@ -1,7 +1,9 @@
 {
   "itemGroup.cad": "CAD",
+  "block.cad.cad_calibration_table": "CAD Calibration Table",
   "block.cad.psionite_block": "Block of Psionite",
   "block.cad.psionite_ore": "Psionite Ore",
+  "item.cad.cad_basic": "Basic CAD",
   "item.cad.psionite_axe": "Psionite Axe",
   "item.cad.psionite_hoe": "Psionite Hoe",
   "item.cad.psionite_ingot": "Psionite Ingot",

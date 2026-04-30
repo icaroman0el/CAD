@@ -1,22 +1,24 @@
 {
   "itemGroup.cad": "CAD",
+  "block.cad.cad_calibration_table": "Mesa de Calibracao do CAD",
   "block.cad.psionite_block": "Bloco de Psionita",
-  "block.cad.psionite_ore": "Minério de Psionita",
+  "block.cad.psionite_ore": "Minerio de Psionita",
+  "item.cad.cad_basic": "CAD Basico",
   "item.cad.psionite_axe": "Machado de Psionita",
   "item.cad.psionite_hoe": "Enxada de Psionita",
   "item.cad.psionite_ingot": "Lingote de Psionita",
   "item.cad.psionite_pickaxe": "Picareta de Psionita",
-  "item.cad.psionite_shovel": "Pá de Psionita",
+  "item.cad.psionite_shovel": "Pa de Psionita",
   "item.cad.psionite_sword": "Espada de Psionita",
   "item.cad.raw_psionite": "Psionita Bruta",
   "curios.identifier.cad": "CAD",
   "curios.modifiers.cad": "Quando vinculado ao CAD:",
 
-  "cad.configuration.title": "Configurações do CAD",
-  "cad.configuration.section.cad.common.toml": "Configurações do CAD",
-  "cad.configuration.section.cad.common.toml.title": "Configurações do CAD",
+  "cad.configuration.title": "Configuracoes do CAD",
+  "cad.configuration.section.cad.common.toml": "Configuracoes do CAD",
+  "cad.configuration.section.cad.common.toml.title": "Configuracoes do CAD",
   "cad.configuration.items": "Lista de Itens",
   "cad.configuration.logDirtBlock": "Registrar Bloco de Terra",
-  "cad.configuration.magicNumberIntroduction": "Texto do Número Mágico",
-  "cad.configuration.magicNumber": "Número Mágico"
+  "cad.configuration.magicNumberIntroduction": "Texto do Numero Magico",
+  "cad.configuration.magicNumber": "Numero Magico"
 }
