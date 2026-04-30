@@ -1,5 +1,6 @@
-﻿{
+{
     "credit":  "Made with Blockbench",
+    "render_type":  "cutout",
     "textures":  {
                      "0":  "cad:block/cad_calibration_table",
                      "particle":  "cad:block/cad_calibration_table"
