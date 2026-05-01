@@ -46,3 +46,7 @@ gradlew.bat runClient
 ## Status
 
 CAD is under active development. More magical materials, CAD devices, and Curios-based systems are planned.
+
+## Copyright
+
+Copyright (c) 2026 Icaro Manoel. All rights reserved.
