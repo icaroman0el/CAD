@@ -1,8 +1,11 @@
 package cad.regulusxv.cad;
 
+import cad.regulusxv.cad.network.CadPulsePayload;
 import cad.regulusxv.cad.client.renderer.CadCalibrationTableRenderer;
 import cad.regulusxv.cad.psion.PsionData;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -13,11 +16,16 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.network.PacketDistributor;
+import org.lwjgl.glfw.GLFW;
 
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
 @Mod(value = CAD.MODID, dist = Dist.CLIENT)
@@ -25,6 +33,11 @@ import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 @EventBusSubscriber(modid = CAD.MODID, value = Dist.CLIENT)
 public class CADClient {
     private static final ResourceLocation PSION_HUD = ResourceLocation.fromNamespaceAndPath(CAD.MODID, "psion_hud");
+    private static final KeyMapping PSION_PULSE_KEY = new KeyMapping(
+            "key.cad.psion_pulse",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_R,
+            "key.categories.cad");
 
     public CADClient(IEventBus modEventBus, ModContainer container) {
         // Allows NeoForge to create a config screen for this mod's configs.
@@ -33,6 +46,8 @@ public class CADClient {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         modEventBus.addListener(CADClient::registerGuiLayers);
         modEventBus.addListener(CADClient::registerRenderers);
+        modEventBus.addListener(CADClient::registerKeyMappings);
+        NeoForge.EVENT_BUS.addListener(CADClient::onClientTick);
     }
 
     @SubscribeEvent
@@ -48,6 +63,21 @@ public class CADClient {
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(CAD.CAD_CALIBRATION_TABLE_BLOCK_ENTITY.get(), CadCalibrationTableRenderer::new);
+    }
+
+    private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        event.register(PSION_PULSE_KEY);
+    }
+
+    private static void onClientTick(ClientTickEvent.Post event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player == null || minecraft.getConnection() == null) {
+            return;
+        }
+
+        while (PSION_PULSE_KEY.consumeClick()) {
+            PacketDistributor.sendToServer(CadPulsePayload.INSTANCE);
+        }
     }
 
     private static void renderPsionHud(GuiGraphics graphics, DeltaTracker deltaTracker) {

@@ -13,6 +13,8 @@
   "item.cad.raw_psionite": "Raw Psionite",
   "curios.identifier.cad": "CAD",
   "curios.modifiers.cad": "When linked to CAD:",
+  "key.categories.cad": "CAD",
+  "key.cad.psion_pulse": "Psion Pulse",
 
   "cad.configuration.title": "CAD Configs",
   "cad.configuration.section.cad.common.toml": "CAD Configs",

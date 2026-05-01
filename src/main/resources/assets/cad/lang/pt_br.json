@@ -13,6 +13,8 @@
   "item.cad.raw_psionite": "Psionita Bruta",
   "curios.identifier.cad": "CAD",
   "curios.modifiers.cad": "Quando vinculado ao CAD:",
+  "key.categories.cad": "CAD",
+  "key.cad.psion_pulse": "Pulso Psion",
 
   "cad.configuration.title": "Configuracoes do CAD",
   "cad.configuration.section.cad.common.toml": "Configuracoes do CAD",

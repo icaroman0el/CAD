@@ -2,6 +2,7 @@ package cad.regulusxv.cad;
 
 import cad.regulusxv.cad.block.CadCalibrationTableBlock;
 import cad.regulusxv.cad.block.entity.CadCalibrationTableBlockEntity;
+import cad.regulusxv.cad.network.CadPulsePayload;
 import cad.regulusxv.cad.psion.PsionData;
 import org.slf4j.Logger;
 
@@ -41,6 +42,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -131,6 +133,7 @@ public class CAD {
     public CAD(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::registerPayloadHandlers);
 
         // Register the Deferred Register to the mod event bus so blocks get registered
         BLOCKS.register(modEventBus);
@@ -163,6 +166,11 @@ public class CAD {
         LOGGER.info("{}{}", Config.MAGIC_NUMBER_INTRODUCTION.get(), Config.MAGIC_NUMBER.getAsInt());
 
         Config.ITEM_STRINGS.get().forEach((item) -> LOGGER.info("ITEM >> {}", item));
+    }
+
+    private void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
+        event.registrar(MODID)
+                .playToServer(CadPulsePayload.TYPE, CadPulsePayload.STREAM_CODEC, CadPulsePayload::handle);
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
