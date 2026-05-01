@@ -58,7 +58,7 @@ public final class PsionPulse {
 
         spawnBeam(level, start, direction, length);
         damageTargets(level, player, start, direction, length);
-        player.displayClientMessage(PsionData.status(player), true);
+        CAD.syncPsions(player);
     }
 
     private static Vec3 findBeamEnd(ServerLevel level, ServerPlayer player, Vec3 start, Vec3 direction) {
@@ -100,10 +100,10 @@ public final class PsionPulse {
     private static void spawnBeam(ServerLevel level, Vec3 start, Vec3 direction, double length) {
         for (double distance = 0.0D; distance <= length; distance += 0.35D) {
             Vec3 point = start.add(direction.scale(distance));
-            level.sendParticles(ParticleTypes.DRAGON_BREATH, point.x, point.y, point.z, 3, 0.045D, 0.045D, 0.045D, 0.01D);
+            level.sendParticles(ParticleTypes.WITCH, point.x, point.y, point.z, 2, 0.025D, 0.025D, 0.025D, 0.0D);
 
             if (((int) (distance * 10.0D)) % 7 == 0) {
-                level.sendParticles(ParticleTypes.PORTAL, point.x, point.y, point.z, 2, 0.08D, 0.08D, 0.08D, 0.02D);
+                level.sendParticles(ParticleTypes.PORTAL, point.x, point.y, point.z, 1, 0.04D, 0.04D, 0.04D, 0.01D);
             }
         }
     }

@@ -3,6 +3,7 @@ package cad.regulusxv.cad;
 import cad.regulusxv.cad.block.CadCalibrationTableBlock;
 import cad.regulusxv.cad.block.entity.CadCalibrationTableBlockEntity;
 import cad.regulusxv.cad.network.CadPulsePayload;
+import cad.regulusxv.cad.network.CadPsionSyncPayload;
 import cad.regulusxv.cad.psion.PsionData;
 import org.slf4j.Logger;
 
@@ -23,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -42,6 +44,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -170,7 +173,8 @@ public class CAD {
 
     private void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
         event.registrar(MODID)
-                .playToServer(CadPulsePayload.TYPE, CadPulsePayload.STREAM_CODEC, CadPulsePayload::handle);
+                .playToServer(CadPulsePayload.TYPE, CadPulsePayload.STREAM_CODEC, CadPulsePayload::handle)
+                .playToClient(CadPsionSyncPayload.TYPE, CadPsionSyncPayload.STREAM_CODEC, CadPsionSyncPayload::handle);
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
@@ -232,16 +236,27 @@ public class CAD {
     @SubscribeEvent
     public void onPlayerClone(PlayerEvent.Clone event) {
         PsionData.copy(event.getOriginal(), event.getEntity());
+        syncPsions(event.getEntity());
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        syncPsions(event.getEntity());
     }
 
     @SubscribeEvent
     public void onPlayerTick(PlayerTickEvent.Post event) {
+        if (event.getEntity().level().isClientSide()) {
+            return;
+        }
+
         if (!PsionData.isUnlocked(event.getEntity())) {
             return;
         }
 
         if (event.getEntity().tickCount % 80 == 0) {
             PsionData.add(event.getEntity(), 1);
+            syncPsions(event.getEntity());
         }
     }
 
@@ -289,9 +304,16 @@ public class CAD {
             if (consumesItem && !player.getAbilities().instabuild) {
                 stack.shrink(1);
             }
+            syncPsions(player);
             player.displayClientMessage(PsionData.status(player), true);
         }
 
         return true;
+    }
+
+    public static void syncPsions(net.minecraft.world.entity.player.Player player) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, CadPsionSyncPayload.from(serverPlayer));
+        }
     }
 }

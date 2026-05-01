@@ -91,6 +91,14 @@ public final class PsionData {
         }
     }
 
+    public static void sync(Player player, boolean unlocked, int amount, int capacity, int stage) {
+        CompoundTag data = getData(player);
+        data.putBoolean(UNLOCKED_KEY, unlocked);
+        data.putInt(AMOUNT_KEY, amount);
+        data.putInt(CAPACITY_KEY, capacity);
+        data.putInt(STAGE_KEY, stage);
+    }
+
     public static Component status(Player player) {
         if (!isUnlocked(player)) {
             return Component.literal("Psions locked");
