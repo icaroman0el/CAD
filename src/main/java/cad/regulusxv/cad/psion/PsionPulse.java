@@ -1,6 +1,7 @@
 package cad.regulusxv.cad.psion;
 
 import cad.regulusxv.cad.CAD;
+import cad.regulusxv.cad.network.CadBeamPayload;
 import java.util.Comparator;
 import java.util.List;
 import net.minecraft.core.particles.ParticleTypes;
@@ -15,6 +16,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 import top.theillusivec4.curios.api.CuriosApi;
 
 public final class PsionPulse {
@@ -56,7 +58,8 @@ public final class PsionPulse {
         Vec3 end = findBeamEnd(level, player, start, direction);
         double length = start.distanceTo(end);
 
-        spawnBeam(level, start, direction, length);
+        sendVisualBeam(level, player, end);
+        spawnImpact(level, end);
         damageTargets(level, player, start, direction, length);
         CAD.syncPsions(player);
     }
@@ -97,15 +100,14 @@ public final class PsionPulse {
         return distanceFromBeam <= RADIUS + entity.getBbWidth() * 0.5D;
     }
 
-    private static void spawnBeam(ServerLevel level, Vec3 start, Vec3 direction, double length) {
-        for (double distance = 0.0D; distance <= length; distance += 0.35D) {
-            Vec3 point = start.add(direction.scale(distance));
-            level.sendParticles(ParticleTypes.WITCH, point.x, point.y, point.z, 2, 0.025D, 0.025D, 0.025D, 0.0D);
+    private static void sendVisualBeam(ServerLevel level, ServerPlayer player, Vec3 end) {
+        Vec3 hand = player.getRopeHoldPosition(1.0F);
+        PacketDistributor.sendToPlayersNear(level, null, hand.x, hand.y, hand.z, 64.0D, new CadBeamPayload(hand, end, 7));
+    }
 
-            if (((int) (distance * 10.0D)) % 7 == 0) {
-                level.sendParticles(ParticleTypes.PORTAL, point.x, point.y, point.z, 1, 0.04D, 0.04D, 0.04D, 0.01D);
-            }
-        }
+    private static void spawnImpact(ServerLevel level, Vec3 point) {
+        level.sendParticles(ParticleTypes.WITCH, point.x, point.y, point.z, 8, 0.08D, 0.08D, 0.08D, 0.0D);
+        level.sendParticles(ParticleTypes.PORTAL, point.x, point.y, point.z, 6, 0.10D, 0.10D, 0.10D, 0.02D);
     }
 
     private static boolean hasCadEquipped(Player player) {

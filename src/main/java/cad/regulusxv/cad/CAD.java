@@ -2,6 +2,7 @@ package cad.regulusxv.cad;
 
 import cad.regulusxv.cad.block.CadCalibrationTableBlock;
 import cad.regulusxv.cad.block.entity.CadCalibrationTableBlockEntity;
+import cad.regulusxv.cad.network.CadBeamPayload;
 import cad.regulusxv.cad.network.CadPulsePayload;
 import cad.regulusxv.cad.network.CadPsionSyncPayload;
 import cad.regulusxv.cad.psion.PsionData;
@@ -174,6 +175,7 @@ public class CAD {
     private void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
         event.registrar(MODID)
                 .playToServer(CadPulsePayload.TYPE, CadPulsePayload.STREAM_CODEC, CadPulsePayload::handle)
+                .playToClient(CadBeamPayload.TYPE, CadBeamPayload.STREAM_CODEC, CadBeamPayload::handle)
                 .playToClient(CadPsionSyncPayload.TYPE, CadPsionSyncPayload.STREAM_CODEC, CadPsionSyncPayload::handle);
     }
 

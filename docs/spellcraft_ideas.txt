@@ -1,0 +1,65 @@
+CAD Spellcraft Ideas
+====================
+
+Goal
+----
+Build a spellcraft system inspired by programmable magic, but with CAD's own identity.
+Avoid copying Psi directly. The CAD should feel like a piece of psionic hardware that
+is calibrated, upgraded, and loaded with modular effects.
+
+Core Concept
+------------
+- The CAD is the player's hardware.
+- The CAD defines limits such as Psion capacity, cooldown, range, available spell slots,
+  efficiency, and complexity.
+- The Calibration Table is the editor/workbench where spells are assembled and stored.
+- Spells are saved into the CAD item itself.
+
+First Version: Modular Spellcraft
+---------------------------------
+Start simple, with modular pieces instead of a full visual programming language.
+
+Possible module categories:
+- Shape: Beam, Pulse, Self, Area
+- Target: Entity, Block, Self, Direction
+- Effect: Damage, Push, Pull, Light, Break Block
+- Modifier: Range Up, Cost Down, Width Up, Piercing
+- Condition: Has Target, Looking at Entity, Looking at Block
+
+Example spell:
+- Shape: Beam
+- Target: Entity
+- Effect: Damage
+- Modifier: Range Up
+- Cost: calculated from all modules
+
+CAD Slots
+---------
+- Basic CAD starts with a small number of spell slots.
+- Better CAD tiers can unlock more slots and higher complexity.
+- One key can activate the selected spell.
+- Another key can cycle between saved spells.
+
+Progression Ideas
+-----------------
+- Psionite unlocks the Psion system.
+- Psionite blocks increase capacity.
+- Calibration Table unlocks spell assembly.
+- Advanced modules require crafted components.
+- Stronger CAD tiers increase max complexity, capacity, and efficiency.
+
+Design Direction
+----------------
+- The system should feel technical, clean, and psionic.
+- The player is not casting from a book; they are channeling energy through calibrated hardware.
+- Keep the first implementation playable and understandable.
+- Expand toward node-based or programmable spellcraft only after the modular version feels good.
+
+Possible Next Steps
+-------------------
+1. Add spell data storage to the CAD item.
+2. Add a selected spell index.
+3. Add keybind to cycle spells.
+4. Add a simple hardcoded spell definition format.
+5. Make the Calibration Table open a basic menu.
+6. Let the table write one assembled spell into the CAD.

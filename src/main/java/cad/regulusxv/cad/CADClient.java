@@ -1,6 +1,7 @@
 package cad.regulusxv.cad;
 
 import cad.regulusxv.cad.network.CadPulsePayload;
+import cad.regulusxv.cad.client.renderer.CadBeamRenderer;
 import cad.regulusxv.cad.client.renderer.CadCalibrationTableRenderer;
 import cad.regulusxv.cad.psion.PsionData;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -20,6 +21,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
@@ -48,6 +50,7 @@ public class CADClient {
         modEventBus.addListener(CADClient::registerRenderers);
         modEventBus.addListener(CADClient::registerKeyMappings);
         NeoForge.EVENT_BUS.addListener(CADClient::onClientTick);
+        NeoForge.EVENT_BUS.addListener(CADClient::onRenderLevelStage);
     }
 
     @SubscribeEvent
@@ -78,6 +81,12 @@ public class CADClient {
         while (PSION_PULSE_KEY.consumeClick()) {
             PacketDistributor.sendToServer(CadPulsePayload.INSTANCE);
         }
+
+        CadBeamRenderer.tick();
+    }
+
+    private static void onRenderLevelStage(RenderLevelStageEvent event) {
+        CadBeamRenderer.render(event);
     }
 
     private static void renderPsionHud(GuiGraphics graphics, DeltaTracker deltaTracker) {
