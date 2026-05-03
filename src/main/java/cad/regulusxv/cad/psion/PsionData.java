@@ -24,16 +24,16 @@ public final class PsionData {
     }
 
     public static boolean isUnlocked(Player player) {
-        return getData(player).getBoolean(UNLOCKED_KEY);
+        return getData(player).getBoolean(UNLOCKED_KEY).orElse(false);
     }
 
     public static int getAmount(Player player) {
-        return getData(player).getInt(AMOUNT_KEY);
+        return getData(player).getInt(AMOUNT_KEY).orElse(0);
     }
 
     public static int getCapacity(Player player) {
         CompoundTag data = getData(player);
-        int capacity = data.getInt(CAPACITY_KEY);
+        int capacity = data.getInt(CAPACITY_KEY).orElse(0);
         if (capacity <= 0) {
             capacity = BASE_CAPACITY;
             data.putInt(CAPACITY_KEY, capacity);
@@ -42,7 +42,7 @@ public final class PsionData {
     }
 
     public static int getStage(Player player) {
-        return getData(player).getInt(STAGE_KEY);
+        return getData(player).getInt(STAGE_KEY).orElse(0);
     }
 
     public static void unlock(Player player) {
@@ -87,7 +87,8 @@ public final class PsionData {
 
     public static void copy(Player original, Player target) {
         if (original.getPersistentData().contains(ROOT_KEY)) {
-            target.getPersistentData().put(ROOT_KEY, original.getPersistentData().getCompound(ROOT_KEY).copy());
+            original.getPersistentData().getCompound(ROOT_KEY)
+                    .ifPresent(data -> target.getPersistentData().put(ROOT_KEY, data.copy()));
         }
     }
 
@@ -113,6 +114,10 @@ public final class PsionData {
             persistentData.put(ROOT_KEY, new CompoundTag());
         }
 
-        return persistentData.getCompound(ROOT_KEY);
+        return persistentData.getCompound(ROOT_KEY).orElseGet(() -> {
+            CompoundTag data = new CompoundTag();
+            persistentData.put(ROOT_KEY, data);
+            return data;
+        });
     }
 }

@@ -13,7 +13,9 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BlockItem;
@@ -22,9 +24,8 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -38,7 +39,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.SimpleTier;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -68,7 +68,7 @@ public class CAD {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     public static final DeferredBlock<Block> PSIONITE_ORE = BLOCKS.registerSimpleBlock("psionite_ore",
-            BlockBehaviour.Properties.of()
+            () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .strength(3.0f, 3.0f)
                     .requiresCorrectToolForDrops()
@@ -76,7 +76,7 @@ public class CAD {
     public static final DeferredItem<BlockItem> PSIONITE_ORE_ITEM = ITEMS.registerSimpleBlockItem("psionite_ore", PSIONITE_ORE);
 
     public static final DeferredBlock<Block> PSIONITE_BLOCK = BLOCKS.registerSimpleBlock("psionite_block",
-            BlockBehaviour.Properties.of()
+            () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_PURPLE)
                     .strength(5.0f, 6.0f)
                     .requiresCorrectToolForDrops()
@@ -85,33 +85,39 @@ public class CAD {
 
     public static final DeferredItem<Item> RAW_PSIONITE = ITEMS.registerSimpleItem("raw_psionite");
     public static final DeferredItem<Item> PSIONITE_INGOT = ITEMS.registerSimpleItem("psionite_ingot");
-    public static final DeferredItem<Item> CAD_BASIC = ITEMS.registerSimpleItem("cad_basic", new Item.Properties().stacksTo(1));
+    public static final DeferredItem<Item> CAD_BASIC = ITEMS.registerSimpleItem("cad_basic", () -> new Item.Properties().stacksTo(1));
 
-    public static final DeferredBlock<CadCalibrationTableBlock> CAD_CALIBRATION_TABLE = BLOCKS.register("cad_calibration_table",
-            () -> new CadCalibrationTableBlock(BlockBehaviour.Properties.of()
+    public static final DeferredBlock<CadCalibrationTableBlock> CAD_CALIBRATION_TABLE = BLOCKS.registerBlock("cad_calibration_table",
+            CadCalibrationTableBlock::new,
+            () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .strength(4.0f, 8.0f)
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
-                    .sound(SoundType.METAL)));
+                    .sound(SoundType.METAL));
     public static final DeferredItem<BlockItem> CAD_CALIBRATION_TABLE_ITEM = ITEMS.registerSimpleBlockItem("cad_calibration_table", CAD_CALIBRATION_TABLE);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CadCalibrationTableBlockEntity>> CAD_CALIBRATION_TABLE_BLOCK_ENTITY =
             BLOCK_ENTITY_TYPES.register("cad_calibration_table",
-                    () -> BlockEntityType.Builder.of(CadCalibrationTableBlockEntity::new, CAD_CALIBRATION_TABLE.get()).build(null));
+                    () -> new BlockEntityType<>(CadCalibrationTableBlockEntity::new, CAD_CALIBRATION_TABLE.get()));
 
-    public static final SimpleTier PSIONITE_TIER = new SimpleTier(BlockTags.INCORRECT_FOR_DIAMOND_TOOL, 1561, 8.0f, 3.0f, 10,
-            () -> net.minecraft.world.item.crafting.Ingredient.of(PSIONITE_INGOT.get()));
+    public static final ToolMaterial PSIONITE_TIER = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_DIAMOND_TOOL,
+            1561,
+            8.0f,
+            3.0f,
+            10,
+            ItemTags.create(Identifier.fromNamespaceAndPath(MODID, "psionite_tool_materials")));
 
-    public static final DeferredItem<SwordItem> PSIONITE_SWORD = ITEMS.register("psionite_sword",
-            () -> new SwordItem(PSIONITE_TIER, new Item.Properties().attributes(SwordItem.createAttributes(PSIONITE_TIER, 3, -2.4f))));
-    public static final DeferredItem<ShovelItem> PSIONITE_SHOVEL = ITEMS.register("psionite_shovel",
-            () -> new ShovelItem(PSIONITE_TIER, new Item.Properties().attributes(ShovelItem.createAttributes(PSIONITE_TIER, 1.5f, -3.0f))));
-    public static final DeferredItem<PickaxeItem> PSIONITE_PICKAXE = ITEMS.register("psionite_pickaxe",
-            () -> new PickaxeItem(PSIONITE_TIER, new Item.Properties().attributes(PickaxeItem.createAttributes(PSIONITE_TIER, 1.0f, -2.8f))));
-    public static final DeferredItem<AxeItem> PSIONITE_AXE = ITEMS.register("psionite_axe",
-            () -> new AxeItem(PSIONITE_TIER, new Item.Properties().attributes(AxeItem.createAttributes(PSIONITE_TIER, 5.0f, -3.0f))));
-    public static final DeferredItem<HoeItem> PSIONITE_HOE = ITEMS.register("psionite_hoe",
-            () -> new HoeItem(PSIONITE_TIER, new Item.Properties().attributes(HoeItem.createAttributes(PSIONITE_TIER, -3.0f, 0.0f))));
+    public static final DeferredItem<Item> PSIONITE_SWORD = ITEMS.registerItem("psionite_sword",
+            properties -> new Item(properties.sword(PSIONITE_TIER, 3.0f, -2.4f)));
+    public static final DeferredItem<ShovelItem> PSIONITE_SHOVEL = ITEMS.registerItem("psionite_shovel",
+            properties -> new ShovelItem(PSIONITE_TIER, 1.5f, -3.0f, properties));
+    public static final DeferredItem<Item> PSIONITE_PICKAXE = ITEMS.registerItem("psionite_pickaxe",
+            properties -> new Item(properties.pickaxe(PSIONITE_TIER, 1.0f, -2.8f)));
+    public static final DeferredItem<AxeItem> PSIONITE_AXE = ITEMS.registerItem("psionite_axe",
+            properties -> new AxeItem(PSIONITE_TIER, 5.0f, -3.0f, properties));
+    public static final DeferredItem<HoeItem> PSIONITE_HOE = ITEMS.registerItem("psionite_hoe",
+            properties -> new HoeItem(PSIONITE_TIER, -3.0f, 0.0f, properties));
 
     // Creates a creative tab with the id "cad:example_tab" for the example item, that is placed after the combat tab
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
@@ -307,7 +313,7 @@ public class CAD {
                 stack.shrink(1);
             }
             syncPsions(player);
-            player.displayClientMessage(PsionData.status(player), true);
+            player.sendSystemMessage(PsionData.status(player));
         }
 
         return true;

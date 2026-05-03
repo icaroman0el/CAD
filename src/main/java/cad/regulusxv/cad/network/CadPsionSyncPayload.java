@@ -5,12 +5,12 @@ import cad.regulusxv.cad.psion.PsionData;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record CadPsionSyncPayload(boolean unlocked, int amount, int capacity, int stage) implements CustomPacketPayload {
-    public static final Type<CadPsionSyncPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(CAD.MODID, "psion_sync"));
+    public static final Type<CadPsionSyncPayload> TYPE = new Type<>(Identifier.fromNamespaceAndPath(CAD.MODID, "psion_sync"));
     public static final StreamCodec<RegistryFriendlyByteBuf, CadPsionSyncPayload> STREAM_CODEC = StreamCodec.of(
             CadPsionSyncPayload::encode,
             CadPsionSyncPayload::decode);

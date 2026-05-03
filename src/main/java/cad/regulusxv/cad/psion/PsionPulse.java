@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -31,28 +32,29 @@ public final class PsionPulse {
 
     public static void cast(ServerPlayer player) {
         if (!hasCadEquipped(player)) {
-            player.displayClientMessage(Component.literal("Equip a CAD to channel Psions"), true);
+            player.sendSystemMessage(Component.literal("Equip a CAD to channel Psions"), true);
             return;
         }
 
         if (!PsionData.isUnlocked(player)) {
-            player.displayClientMessage(Component.literal("Unlock Psions first"), true);
+            player.sendSystemMessage(Component.literal("Unlock Psions first"), true);
             return;
         }
 
-        if (player.getCooldowns().isOnCooldown(CAD.CAD_BASIC.get())) {
+        ItemStack cadStack = CAD.CAD_BASIC.get().getDefaultInstance();
+        if (player.getCooldowns().isOnCooldown(cadStack)) {
             return;
         }
 
         if (!player.getAbilities().instabuild && !PsionData.consume(player, COST)) {
-            player.displayClientMessage(Component.literal("Not enough Psions"), true);
+            player.sendSystemMessage(Component.literal("Not enough Psions"), true);
             return;
         }
 
-        player.getCooldowns().addCooldown(CAD.CAD_BASIC.get(), COOLDOWN_TICKS);
+        player.getCooldowns().addCooldown(cadStack, COOLDOWN_TICKS);
         player.swing(InteractionHand.MAIN_HAND, true);
 
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
         Vec3 start = player.getEyePosition();
         Vec3 direction = player.getLookAngle().normalize();
         Vec3 end = findBeamEnd(level, player, start, direction);

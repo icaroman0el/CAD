@@ -7,15 +7,16 @@ import java.util.Iterator;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.joml.Matrix4f;
 
 public final class CadBeamRenderer {
     private static final List<ActiveBeam> BEAMS = new ArrayList<>();
-    private static final double CORE_RADIUS = 0.06D;
-    private static final double GLOW_RADIUS = 0.17D;
+    private static final double CORE_RADIUS = 0.09D;
+    private static final double GLOW_RADIUS = 0.25D;
 
     private CadBeamRenderer() {
     }
@@ -35,16 +36,17 @@ public final class CadBeamRenderer {
         }
     }
 
-    public static void render(RenderLevelStageEvent event) {
-        if (BEAMS.isEmpty() || event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
+    public static void render(RenderLevelStageEvent.AfterTranslucentParticles event) {
+        if (BEAMS.isEmpty()) {
             return;
         }
 
         Minecraft minecraft = Minecraft.getInstance();
         MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.lightning());
+        RenderType renderType = RenderTypes.lightning();
+        VertexConsumer consumer = bufferSource.getBuffer(renderType);
         PoseStack poseStack = event.getPoseStack();
-        Vec3 camera = event.getCamera().getPosition();
+        Vec3 camera = minecraft.gameRenderer.getMainCamera().position();
 
         poseStack.pushPose();
         poseStack.translate(-camera.x, -camera.y, -camera.z);
@@ -55,7 +57,7 @@ public final class CadBeamRenderer {
         }
 
         poseStack.popPose();
-        bufferSource.endBatch(RenderType.lightning());
+        bufferSource.endBatch(renderType);
     }
 
     private static void renderBeam(Matrix4f matrix, VertexConsumer consumer, ActiveBeam beam, Vec3 camera) {
@@ -81,10 +83,10 @@ public final class CadBeamRenderer {
         float fade = Math.min(1.0F, beam.remainingTicks / (float) beam.durationTicks);
         float pulse = 0.75F + 0.25F * (float) Math.sin((beam.durationTicks - beam.remainingTicks) * 0.9F);
 
-        renderCrossBeam(matrix, consumer, beam.start, beam.end, side, GLOW_RADIUS, 0.55F, 0.0F, 1.0F, 0.18F * fade);
-        renderCrossBeam(matrix, consumer, beam.start, beam.end, vertical, GLOW_RADIUS, 0.55F, 0.0F, 1.0F, 0.14F * fade);
-        renderCrossBeam(matrix, consumer, beam.start, beam.end, side, CORE_RADIUS, 0.98F, 0.62F, 1.0F, 0.70F * fade * pulse);
-        renderCrossBeam(matrix, consumer, beam.start, beam.end, vertical, CORE_RADIUS, 0.98F, 0.62F, 1.0F, 0.55F * fade * pulse);
+        renderCrossBeam(matrix, consumer, beam.start, beam.end, side, GLOW_RADIUS, 0.55F, 0.0F, 1.0F, 0.28F * fade);
+        renderCrossBeam(matrix, consumer, beam.start, beam.end, vertical, GLOW_RADIUS, 0.55F, 0.0F, 1.0F, 0.22F * fade);
+        renderCrossBeam(matrix, consumer, beam.start, beam.end, side, CORE_RADIUS, 1.0F, 0.72F, 1.0F, 0.90F * fade * pulse);
+        renderCrossBeam(matrix, consumer, beam.start, beam.end, vertical, CORE_RADIUS, 1.0F, 0.72F, 1.0F, 0.75F * fade * pulse);
     }
 
     private static void renderCrossBeam(

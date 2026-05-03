@@ -4,9 +4,7 @@
   "cookingtime": 100,
   "experience": 0.7,
   "group": "psionite_ingot",
-  "ingredient": {
-    "item": "cad:raw_psionite"
-  },
+  "ingredient": "cad:raw_psionite",
   "result": {
     "id": "cad:psionite_ingot"
   }
